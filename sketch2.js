@@ -3,17 +3,15 @@ rect(x:position x, y: position y, x: width, y: height)
 mouseX: use the x position from the mouse
 mouseY: use the y position from the mouse
 */
-var bgColor = '#515151'
+var bgColor = '#000000'
+var hex = '#000000'
 var size = { w: 15, h: 15 }
 var sqsize = 15
 var bd = sqsize // border
 var lclick = true
-var dline = false
 var alg = 'dda'
 var li1 = [bd, bd]
-var li2 = [bd, bd]
 var matrix = []
-var mouse = []
 
 function setup() {
   // put setup code here
@@ -26,6 +24,104 @@ function setup() {
 
   var reset = select('#reset')
   reset.mousePressed(resetMatrix)
+
+  var black = select('#color_black')
+  black.mousePressed(color_black)
+
+  var brown = select('#color_brown')
+  brown.mousePressed(color_brown)
+
+  var red = select('#color_red')
+  red.mousePressed(color_red)
+
+  var darkorange = select('#color_darkorange')
+  darkorange.mousePressed(color_darkorange)
+
+  var darkgreen = select('#color_darkgreen')
+  darkgreen.mousePressed(color_darkgreen)
+
+  var darkblue = select('#color_darkblue')
+  darkblue.mousePressed(color_darkblue)
+
+  var yellow = select('#color_yellow')
+  yellow.mousePressed(color_yellow)
+
+  var white = select('#color_white')
+  white.mousePressed(color_white)
+
+  var grey = select('#color_grey')
+  grey.mousePressed(color_grey)
+
+  var pink = select('#color_pink')
+  pink.mousePressed(color_pink)
+
+  var lightorange = select('#color_lightorange')
+  lightorange.mousePressed(color_lightorange)
+
+  var lightgreen = select('#color_lightgreen')
+  lightgreen.mousePressed(color_lightgreen)
+
+  var skyblue = select('#color_skyblue')
+  skyblue.mousePressed(color_skyblue)
+
+  var purple = select('#color_purple')
+  purple.mousePressed(color_purple)
+
+  function color_black() {
+    hex = '#000000'
+  }
+
+  function color_brown() {
+    hex = '#8B4513'
+  }
+
+  function color_red() {
+    hex = '#FF0000'
+  }
+
+  function color_darkorange() {
+    hex = '#FF7F27'
+  }
+
+  function color_darkgreen() {
+    hex = '#008000'
+  }
+
+  function color_darkblue() {
+    hex = '#000080'
+  }
+
+  function color_yellow() {
+    hex = '#FFFF00'
+  }
+
+  function color_white() {
+    hex = '#FFFFFF'
+  }
+
+  function color_grey() {
+    hex = '#808080'
+  }
+
+  function color_pink() {
+    hex = '#FFAEC9'
+  }
+
+  function color_lightorange() {
+    hex = '#FFC90E'
+  }
+
+  function color_lightgreen() {
+    hex = '#B5E61D'
+  }
+
+  function color_skyblue() {
+    hex = '#99D9EA'
+  }
+
+  function color_purple() {
+    hex = '#A349A4'
+  }
 
   function setDDA() {
     alg = 'dda'
@@ -85,7 +181,7 @@ function grid() {
       if (!matrix[m][n][2]) {
         fill('white')
       } else {
-        fill('red')
+        fill(hex)
       }
       rect(i, j, sqsize, sqsize)
     }
