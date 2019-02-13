@@ -5,7 +5,7 @@ mouseY: use the y position from the mouse
 */
 var bgColor = '#EEEEEE'
 var size = { w: 30, h: 30 }
-var sqsize = 20
+var sq = 20
 var bd = 20 // border
 
 function setup() {
@@ -36,7 +36,7 @@ function grid() {
   let colors = fillColors()
   let w = size.w
   let h = size.h
-  let sq = sqsize
+  let sq = sq
   createCanvas((h * sq) + (2 * bd), (w * sq) + (2 * bd))
   background(bgColor)
   noStroke()

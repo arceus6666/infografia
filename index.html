@@ -1,15 +1,79 @@
 <!DOCTYPE html>
 <html lang="">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Infografía</title>
-    <style> body {padding: 0; margin: 0;} </style>
-    <script src="./libs/p5.min.js"></script>
-    <script src="./libs/addons/p5.dom.min.js"></script>
-    <script src="./libs/addons/p5.sound.min.js"></script>
-    <script src="sketch2.js"></script>
-  </head>
-  <body>
-  </body>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infografía</title>
+  <style>
+    body {
+      padding: 0;
+      margin: 0;
+    }
+  </style>
+  <script src="./libs/p5.min.js"></script>
+  <script src="./libs/addons/p5.dom.min.js"></script>
+  <script src="./libs/addons/p5.sound.min.js"></script>
+  <script src="sketch2.js"></script>
+  <style>
+    .button {
+      border: 1 solid;
+      padding: 10px 10px;
+      cursor: pointer;
+      margin: 1px;
+    }
+
+    .grid-container {
+      border: 1px solid;
+      display: grid;
+      grid-template-columns: auto auto auto auto auto auto auto;
+      grid-template-rows: auto auto auto;
+      grid-column-gap: 0;
+      grid-row-gap: 0;
+      padding: 0px;
+    }
+  </style>
+</head>
+
+<body>
+  <table>
+    <tr>
+      <td>
+        <div style="margin-left: 1%;">
+          <button id="dda">DDA</button>
+          <br />
+          <button id="bres">Bresenham</button>
+          <br />
+          <button id="reset">Reset Matrix</button>
+          <br />
+        </div>
+      </td>
+      <td>
+        <div class="grid-container">
+
+          <button class="button" style="background-color: #008000"></button>
+
+          <button class="button" style="background-color: #FF0000"></button>
+
+          <button class="button" style="background-color: #000080"></button>
+
+          <button class="button" style="background-color: #FFFF00"></button>
+
+          <button class="button" style="background-color: #FF8C00"></button>
+
+          <button class="button" style="background-color: #000000"></button>
+
+          <button class="button" style="background-color: #8B4513"></button>
+
+          <button class="button" style="background-color: #000000"></button>
+
+          <button class="button" style="background-color: #FFFFFF"></button>
+
+        </div>
+      </td>
+    </tr>
+  </table>
+  <br />
+</body>
+
 </html>
