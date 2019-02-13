@@ -4,7 +4,7 @@ mouseX: use the x position from the mouse
 mouseY: use the y position from the mouse
 */
 var bgColor = '#000000'
-var hex = '#000000'
+var hex_color = '#FFFFFF'
 var size = { w: 15, h: 15 }
 var sqsize = 15
 var bd = sqsize // border
@@ -68,59 +68,59 @@ function setup() {
   purple.mousePressed(color_purple)
 
   function color_black() {
-    hex = '#000000'
+    hex_color = '#000000'
   }
 
   function color_brown() {
-    hex = '#8B4513'
+    hex_color = '#8B4513'
   }
 
   function color_red() {
-    hex = '#FF0000'
+    hex_color = '#FF0000'
   }
 
   function color_darkorange() {
-    hex = '#FF7F27'
+    hex_color = '#FF7F27'
   }
 
   function color_darkgreen() {
-    hex = '#008000'
+    hex_color = '#008000'
   }
 
   function color_darkblue() {
-    hex = '#000080'
+    hex_color = '#000080'
   }
 
   function color_yellow() {
-    hex = '#FFFF00'
+    hex_color = '#FFFF00'
   }
 
   function color_white() {
-    hex = '#FFFFFF'
+    hex_color = '#FFFFFF'
   }
 
   function color_grey() {
-    hex = '#808080'
+    hex_color = '#808080'
   }
 
   function color_pink() {
-    hex = '#FFAEC9'
+    hex_color = '#FFAEC9'
   }
 
   function color_lightorange() {
-    hex = '#FFC90E'
+    hex_color = '#FFC90E'
   }
 
   function color_lightgreen() {
-    hex = '#B5E61D'
+    hex_color = '#B5E61D'
   }
 
   function color_skyblue() {
-    hex = '#99D9EA'
+    hex_color = '#99D9EA'
   }
 
   function color_purple() {
-    hex = '#A349A4'
+    hex_color = '#A349A4'
   }
 
   function setDDA() {
@@ -134,9 +134,10 @@ function setup() {
   function resetMatrix() {
     for (let i = bd, m = 0; i < (size.w * sqsize) + bd; i += sqsize, m++) {
       for (let j = bd, n = 0; j < (size.h * sqsize) + bd; j += sqsize, n++) {
-        matrix[m][n][2] = false
+        matrix[m][n][2] = '#FFFFFF'
       }
     }
+    redraw()
   }
 
   for (let i = 0; i < size.w; i++) {
@@ -148,7 +149,7 @@ function setup() {
   setTimeout(() => {
     for (let i = bd, m = 0; i < (size.w * sqsize) + bd; i += sqsize, m++) {
       for (let j = bd, n = 0; j < (size.h * sqsize) + bd; j += sqsize, n++) {
-        matrix[m][n] = [i, j, false]
+        matrix[m][n] = [i, j, '#FFFFFF']
       }
     }
   }, 500)
@@ -165,7 +166,6 @@ function draw() {
   // put drawing code here
   //matrix[0][0][2] = true
   grid()
-  fill('red')
   noStroke()
 }
 
@@ -178,11 +178,7 @@ function grid() {
 
   for (let i = bd, m = 0; i < (w * sqsize) + bd; i += sqsize, m++) {
     for (let j = bd, n = 0; j < (h * sqsize) + bd; j += sqsize, n++) {
-      if (!matrix[m][n][2]) {
-        fill('white')
-      } else {
-        fill(hex)
-      }
+      fill(matrix[m][n][2] ? matrix[m][n][2] : '#000000')
       rect(i, j, sqsize, sqsize)
     }
   }
@@ -209,6 +205,7 @@ function mousePressed() {
           break
         }
       }
+      matrix[li1[0] - 1][li1[1] - 1][2] = hex_color
       lclick = false
     } else {
       let xb, yb
@@ -224,6 +221,7 @@ function mousePressed() {
           break
         }
       }
+      matrix[xb - 1][yb - 1][2] = hex_color
       lclick = true
 
       setTimeout(() => {
@@ -275,28 +273,28 @@ function lineDDA(xa, ya, xb, yb) {
     y += yIncrement
     setPixel(round(x), round(y))
   }
-  setTimeout(() => { redraw() }, 200)
+  setTimeout(() => { redraw() }, 500)
 }
 
 // Bresenham
 function lineBres(xa, ya, xb, yb) {
-  var dx = Math.abs(xb - xa);
-  var dy = Math.abs(yb - ya);
-  var sx = (xa < xb) ? 1 : -1;
-  var sy = (ya < yb) ? 1 : -1;
-  var err = dx - dy;
+  var dx = Math.abs(xb - xa)
+  var dy = Math.abs(yb - ya)
+  var sx = (xa < xb) ? 1 : -1
+  var sy = (ya < yb) ? 1 : -1
+  var err = dx - dy
 
   while (true) {
-    setPixel(xa, ya);  // Do what you need to for this
+    setPixel(xa, ya)  // Do what you need to for this
 
-    if ((xa == xb) && (ya == yb)) break;
-    var e2 = 2 * err;
-    if (e2 > -dy) { err -= dy; xa += sx; }
-    if (e2 < dx) { err += dx; ya += sy; }
+    if ((xa === xb) && (ya === yb)) break
+    var e2 = 2 * err
+    if (e2 > -dy) { err -= dy; xa += sx }
+    if (e2 < dx) { err += dx; ya += sy }
   }
-  setTimeout(() => { redraw() }, 200)
+  setTimeout(() => { redraw() }, 500)
 }
 
 function setPixel(x, y) {
-  matrix[x][y][2] = true
+  matrix[x][y][2] = hex_color
 }

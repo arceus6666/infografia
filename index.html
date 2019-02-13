@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <html lang="">
+<!--
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css">
+-->
 
 <head>
   <meta charset="utf-8">
@@ -20,7 +23,6 @@
       border: 1 solid;
       padding: 10px 10px;
       cursor: pointer;
-      margin: 1px;
     }
 
     .grid-container {
@@ -44,9 +46,12 @@
           <br />
           <button id="bres">Bresenham</button>
           <br />
-          <button id="reset">Reset Matrix</button>
+          <button id="reset">Clear</button>
           <br />
         </div>
+      </td>
+      <td>
+        <button id="color_current" class="button" style="background-color: {{hex_color}}"></button>
       </td>
       <td>
         <div class="grid-container">
