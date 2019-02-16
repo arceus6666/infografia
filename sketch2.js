@@ -3,152 +3,208 @@ rect(x:position x, y: position y, x: width, y: height)
 mouseX: use the x position from the mouse
 mouseY: use the y position from the mouse
 */
-var bgColor = '#000000'
 var hex_color = '#FFFFFF'
-var size = { w: 15, h: 15 }
-var sqsize = 15
-var bd = sqsize // border
+var bgColor = '#000000'
+var h = 10
+var w = 7
+var sqsize = 20
+var bd = sqsize / 2 // border
 var lclick = true
+var eclick = 0
 var alg = 'dda'
 var li1 = [bd, bd]
+var li2 = [0, 0]
+
+let cols = w;
+let rows = h;
+//var matrix = new Array(cols)
 var matrix = []
+
+// Two nested loops allow us to visit every spot in a 2D array.   
+// For every column I, visit every row J.
+for (let i = 0; i < cols; i++) {
+  //matrix[i] = new Array(rows)
+  matrix[i] = []
+  for (let j = 0; j < rows; j++) {
+    // object in each cell
+    matrix[i][j] = [];
+  }
+}
+
+//console.log(matrix)
+/*
+var matrix = []
+//var m2 = []
+
+for (let i = 0; i < h; i++) {
+  matrix.push([])
+  //m2.push([])
+  for (let j = 0; j < w; j++) {
+    matrix[i].push([])
+    //m2[i].push(i + ',' + j)
+  }
+}
+*/
+//console.log(m2)
+
+var brush = 'line'
 
 function setup() {
   // put setup code here
 
   var ddaButton = select('#dda')
-  ddaButton.mousePressed(setDDA)
+  ddaButton.mousePressed(() => { alg = 'dda' })
 
   var bresButton = select('#bres')
-  bresButton.mousePressed(setBRES)
+  bresButton.mousePressed(() => { alg = 'bres' })
+
+  var brush_bucket = select('#bucket')
+  brush_bucket.mousePressed(() => { brush = 'bucket' })
+
+  var brush_line = select('#line')
+  brush_line.mousePressed(() => { brush = 'line' })
+
+  var brush_circle = select('#circle')
+  brush_circle.mousePressed(() => { brush = 'circle' })
+
+  var ellipse = select('#ellipse')
+  ellipse.mousePressed(() => { brush = 'ellipse' })
 
   var reset = select('#reset')
   reset.mousePressed(resetMatrix)
 
   var black = select('#color_black')
-  black.mousePressed(color_black)
+  black.mousePressed(() => { hex_color = '#000000' })
 
   var brown = select('#color_brown')
-  brown.mousePressed(color_brown)
+  brown.mousePressed(() => { hex_color = '#8B4513' })
 
   var red = select('#color_red')
-  red.mousePressed(color_red)
+  red.mousePressed(() => { hex_color = '#FF0000' })
 
   var darkorange = select('#color_darkorange')
-  darkorange.mousePressed(color_darkorange)
+  darkorange.mousePressed(() => { hex_color = '#FF7F27' })
 
   var darkgreen = select('#color_darkgreen')
-  darkgreen.mousePressed(color_darkgreen)
+  darkgreen.mousePressed(() => { hex_color = '#008000' })
 
   var darkblue = select('#color_darkblue')
-  darkblue.mousePressed(color_darkblue)
+  darkblue.mousePressed(() => { hex_color = '#000080' })
 
   var yellow = select('#color_yellow')
-  yellow.mousePressed(color_yellow)
+  yellow.mousePressed(() => { hex_color = '#FFFF00' })
 
   var white = select('#color_white')
-  white.mousePressed(color_white)
+  white.mousePressed(() => { hex_color = '#FFFFFF' })
 
   var grey = select('#color_grey')
-  grey.mousePressed(color_grey)
+  grey.mousePressed(() => { hex_color = '#808080' })
 
   var pink = select('#color_pink')
-  pink.mousePressed(color_pink)
+  pink.mousePressed(() => { hex_color = '#FFAEC9' })
 
   var lightorange = select('#color_lightorange')
-  lightorange.mousePressed(color_lightorange)
+  lightorange.mousePressed(() => { hex_color = '#FFC90E' })
 
   var lightgreen = select('#color_lightgreen')
-  lightgreen.mousePressed(color_lightgreen)
+  lightgreen.mousePressed(() => { hex_color = '#B5E61D' })
 
   var skyblue = select('#color_skyblue')
-  skyblue.mousePressed(color_skyblue)
+  skyblue.mousePressed(() => { hex_color = '#99D9EA' })
 
   var purple = select('#color_purple')
-  purple.mousePressed(color_purple)
+  purple.mousePressed(() => { hex_color = '#A349A4' })
 
-  function color_black() {
-    hex_color = '#000000'
+  var sizep = select('#plus')
+  sizep.mousePressed(sizeplus)
+
+  var sizem = select('#minus')
+  sizem.mousePressed(sizeminus)
+
+  function sizeplus() {
+    sqsize++
+    resizeSqMatrix()
   }
 
-  function color_brown() {
-    hex_color = '#8B4513'
+  function sizeminus() {
+    sqsize--
+    resizeSqMatrix()
   }
 
-  function color_red() {
-    hex_color = '#FF0000'
+
+  var rs = select('#resize')
+  rs.mousePressed(resize)
+
+  function resize() {
+    var inputw = select('#w').elt.value
+    var inputh = select('#h').elt.value
+    //console.log(inputw, inputh)
+    w = inputw
+    h = inputh
+    resetMatrix()
   }
 
-  function color_darkorange() {
-    hex_color = '#FF7F27'
-  }
+  var upw = select('#upw')
+  var uph = select('#uph')
+  var downw = select('#downw')
+  var downh = select('#downh')
 
-  function color_darkgreen() {
-    hex_color = '#008000'
-  }
-
-  function color_darkblue() {
-    hex_color = '#000080'
-  }
-
-  function color_yellow() {
-    hex_color = '#FFFF00'
-  }
-
-  function color_white() {
-    hex_color = '#FFFFFF'
-  }
-
-  function color_grey() {
-    hex_color = '#808080'
-  }
-
-  function color_pink() {
-    hex_color = '#FFAEC9'
-  }
-
-  function color_lightorange() {
-    hex_color = '#FFC90E'
-  }
-
-  function color_lightgreen() {
-    hex_color = '#B5E61D'
-  }
-
-  function color_skyblue() {
-    hex_color = '#99D9EA'
-  }
-
-  function color_purple() {
-    hex_color = '#A349A4'
-  }
-
-  function setDDA() {
-    alg = 'dda'
-  }
-
-  function setBRES() {
-    alg = 'bres'
-  }
+  upw.mousePressed(upwMatrix)
+  uph.mousePressed(uphMatrix)
+  downw.mousePressed(() => { w-- })
+  downh.mousePressed(() => { h-- })
 
   function resetMatrix() {
-    for (let i = bd, m = 0; i < (size.w * sqsize) + bd; i += sqsize, m++) {
-      for (let j = bd, n = 0; j < (size.h * sqsize) + bd; j += sqsize, n++) {
-        matrix[m][n][2] = '#FFFFFF'
+    matrix = []
+    for (let i = bd, m = 0; m < w; i += sqsize, m++) {
+      matrix.push([])
+      for (let j = bd, n = 0; n < h; j += sqsize, n++) {
+        matrix[m].push([i, j, '#FFFFFF'])
       }
     }
-    redraw()
+    //redraw()
   }
 
-  for (let i = 0; i < size.w; i++) {
-    matrix.push([])
-    for (let j = 0; j < size.h; j++) {
-      matrix[i].push([])
+  function resizeSqMatrix() {
+    for (let i = bd, m = 0; m < w; i += sqsize, m++) {
+      for (let j = bd, n = 0; n < h; j += sqsize, n++) {
+        matrix[m][n][0] = i
+        matrix[m][n][1] = j
+      }
     }
   }
+
+  function upwMatrix() {
+    // add column i
+    let i = w
+    w++
+    for (i; i < w; i++) {
+      matrix[i] = []
+      for (let j = 0; j < h; j++) {
+        let prev = matrix[i - 1][j]
+        // console.log(prev)
+        matrix[i][j] = [prev[0] + sqsize, prev[1], '#FFFFFF']
+      }
+    }
+  }
+
+  function uphMatrix() {
+    // add row j
+    let j = h
+    h++
+    for (let i = 0; i < w; i++) {
+      let prev = matrix[i][j - 1]
+      //for (let j = l; j < h; j++) {
+      matrix[i][j] = [prev[0], prev[1] + sqsize, '#FFFFFF']
+      //}
+      console.log(prev, i, j)
+    }
+  }
+
+
   setTimeout(() => {
-    for (let i = bd, m = 0; i < (size.w * sqsize) + bd; i += sqsize, m++) {
-      for (let j = bd, n = 0; j < (size.h * sqsize) + bd; j += sqsize, n++) {
+    for (let i = bd, m = 0; m < w; i += sqsize, m++) {
+      for (let j = bd, n = 0; n < h; j += sqsize, n++) {
         matrix[m][n] = [i, j, '#FFFFFF']
       }
     }
@@ -165,88 +221,94 @@ function setup() {
 function draw() {
   // put drawing code here
   //matrix[0][0][2] = true
-  grid()
-  noStroke()
+  setTimeout(() => { grid() }, 200)
 }
 
 function grid() {
-  let w = size.w
-  let h = size.h
   createCanvas((w * sqsize) + (2 * bd), (h * sqsize) + (2 * bd))
-  background(bgColor)
+  background('#DDDDDD')
+  //noStroke(0)
   stroke(0)
 
-  for (let i = bd, m = 0; i < (w * sqsize) + bd; i += sqsize, m++) {
-    for (let j = bd, n = 0; j < (h * sqsize) + bd; j += sqsize, n++) {
-      fill(matrix[m][n][2] ? matrix[m][n][2] : '#000000')
-      rect(i, j, sqsize, sqsize)
+  for (let m = 0; m < w; m++) {
+    for (let n = 0; n < h; n++) {
+      let c = matrix[m][n]
+      try {
+        fill(c[2] ? c[2] : '#FFFFFF')
+        //console.log(c[0],'x',c[1])
+        rect(c[0], c[1], sqsize, sqsize)
+      } catch (e) {
+        //console.log(m, 'x', n, ':', c)
+      }
     }
   }
+
 }
 
 function mousePressed() {
-  // console.log('x:' + mouseX, 'y:' + mouseY)
-  // console.log(lclick)
-  // console.log(mouseX > bd, mouseX < (bd) + (size.w * sqsize), (bd) + (size.w * sqsize))
-  // console.log(mouseY > bd, mouseY < (bd) + (size.w * sqsize), (bd) + (size.w * sqsize))
-  if (mouseX > bd && mouseX < bd + (size.w * sqsize) && (mouseY > bd) && mouseY < (bd) + (size.w * sqsize)) {
+  //console.log(filler)
+  let tx = bd + (w * sqsize)
+  let ty = bd + (h * sqsize)
+  if (mouseX > bd && mouseX < tx && mouseY > bd && mouseY < ty/* && !filler*/) {
+    let x = Math.floor(map(mouseX, bd, tx, 0, w))
+    let y = Math.floor(map(mouseY, bd, ty, 0, h))
     //*
-    if (lclick) {
-      li1 = [mouseX, mouseY]
-      for (let i = bd + 1, ii = 0; i < size.w * sqsize + 2 * bd; i += sqsize, ii++) {
-        if (mouseX + bd > i && mouseX + bd < i + sqsize) {
-          li1[0] = ii
-          break
+    if (brush === 'line') {
+      if (lclick) {
+        li1 = [x, y]
+        matrix[x][y][2] = hex_color
+        lclick = false
+      } else {
+        matrix[x][y][2] = hex_color
+        lclick = true
+        switch (alg) {
+          case 'dda': lineDDA(li1[0], li1[1], x, y)
+            break
+          case 'bres': lineBres(li1[0], li1[1], x, y)
+            break
+          default: lineDDA(li1[0], li1[1], x, y)
+            break
         }
+        //console.log(li1, [x, y], ['puntos'])
+        //}
       }
-      for (let j = bd + 1, jj = 0; j < size.h * sqsize + 2 * bd; j += sqsize, jj++) {
-        if (mouseY + bd > j && mouseY + bd < j + sqsize) {
-          li1[1] = jj
-          break
-        }
+    } else if (brush === 'bucket') {
+      console.log('fill1')
+      //console.log(matrix[y][x][2])
+      myfill(x, y, matrix[y][x][2])
+    } else if (brush === 'circle') {
+      if (lclick) {
+        li1 = [x, y]
+        lclick = false
+      } else {
+        lclick = true
+        let a = (li1[1] - y) * (li1[1] - y)
+        let b = (li1[0] - x) * (li1[0] - x)
+        let r = Math.floor(Math.sqrt(a + b))
+        drawCircle(li1[0], li1[1], r)
       }
-      matrix[li1[0] - 1][li1[1] - 1][2] = hex_color
-      lclick = false
-    } else {
-      let xb, yb
-      for (let i = bd, ii = 0; i < size.w * sqsize + 2 * bd; i += sqsize, ii++) {
-        if (mouseX + bd > i && mouseX + bd < i + sqsize) {
-          xb = ii
-          break
-        }
+    } else if (brush === 'ellipse') {
+      if (eclick === 0) {
+        li1 = [x, y]
+        eclick++
+      } else if (eclick === 1) {
+        li2 = [x, y]
+        eclick++
+      } else {
+        eclick = 0
+        let a = (li1[1] - li2[1]) * (li1[1] - li2[1])
+        let b = (li1[0] - li2[0]) * (li1[0] - li2[0])
+        let aa = (li1[1] - y) * (li1[1] - y)
+        let bb = (li1[0] - x) * (li1[0] - x)
+        let rx = Math.floor(Math.sqrt(a + b))
+        let ry = Math.floor(Math.sqrt(aa + bb))
+        drawEllipse(li1[0], li1[1], rx, ry)
       }
-      for (let j = bd, jj = 0; j < size.h * sqsize + 2 * bd; j += sqsize, jj++) {
-        if (mouseY + bd > j && mouseY + bd < j + sqsize) {
-          yb = jj
-          break
-        }
-      }
-      matrix[xb - 1][yb - 1][2] = hex_color
-      lclick = true
-
-      setTimeout(() => {
-        if (alg === 'dda') {
-          lineDDA(li1[0] - 1, li1[1] - 1, xb - 1, yb - 1)
-        } else if (alg === 'bres') {
-          lineBres(li1[0] - 1, li1[1] - 1, xb - 1, yb - 1)
-        }
-        //console.log(li1, [xb, yb], ['puntos'])
-      }, 100)
-      //}
     }
     //*/
   }
-}
 
-/*
-function getX(x1, y1, x2, y2, y) {
-  return (((y - y1) * (x2 - x1)) / (y2 - y1)) + x1
 }
-
-function getY(x1, y1, x2, y2, x) {
-  return (((x - x1) * (y2 - y1)) / (x2 - x1)) + y1
-}
-*/
 
 function round(a) {
   return parseInt(a + 0.5)
@@ -256,16 +318,13 @@ function round(a) {
 function lineDDA(xa, ya, xb, yb) {
   let dx = xb - xa
   let dy = yb - ya
-  let steps
-  let xIncrement
-  let yIncrement
   let x = xa
   let y = ya
 
-  steps = Math.abs(dx) > Math.abs(dy) ? Math.abs(dx) : Math.abs(dy)
+  let steps = Math.abs(dx) > Math.abs(dy) ? Math.abs(dx) : Math.abs(dy)
 
-  xIncrement = dx / steps
-  yIncrement = dy / steps
+  let xIncrement = dx / steps
+  let yIncrement = dy / steps
 
   setPixel(round(x), round(y))
   for (let k = 0; k < steps; k++) {
@@ -273,16 +332,16 @@ function lineDDA(xa, ya, xb, yb) {
     y += yIncrement
     setPixel(round(x), round(y))
   }
-  setTimeout(() => { redraw() }, 500)
+  //setTimeout(() => { redraw() }, 1)
 }
 
 // Bresenham
 function lineBres(xa, ya, xb, yb) {
-  var dx = Math.abs(xb - xa)
-  var dy = Math.abs(yb - ya)
-  var sx = (xa < xb) ? 1 : -1
-  var sy = (ya < yb) ? 1 : -1
-  var err = dx - dy
+  let dx = Math.abs(xb - xa)
+  let dy = Math.abs(yb - ya)
+  let sx = (xa < xb) ? 1 : -1
+  let sy = (ya < yb) ? 1 : -1
+  let err = dx - dy
 
   while (true) {
     setPixel(xa, ya)  // Do what you need to for this
@@ -292,9 +351,138 @@ function lineBres(xa, ya, xb, yb) {
     if (e2 > -dy) { err -= dy; xa += sx }
     if (e2 < dx) { err += dx; ya += sy }
   }
-  setTimeout(() => { redraw() }, 500)
+  //setTimeout(() => { redraw() }, 1)
+}
+
+
+function drawCircle(xc, yc, r) {
+  //var xc = parseInt(select('#xc').elt.value)
+  //var yc = parseInt(select('#yc').elt.value)
+  //var r = parseInt(select('#rad').elt.value)
+  /*
+  if (
+    xc + r <= w &&
+    xc - r >= 0 &&
+    yc + r <= h &&
+    yc - r >= 0
+  )
+    //*/
+  circleMidpoint(xc, yc, r)
+  // console.log(xc, yc, r)
+}
+
+// circle
+function circleMidpoint(xCenter, yCenter, radius) {
+
+  let x = 0
+  let y = radius
+  let p = 1 - radius
+  console.log(xCenter, yCenter, x, y)
+  circlePlotPoints(xCenter, yCenter, x, y)
+
+  while (x < y) {
+    x++
+    if (p < 0)
+      p += 2 * x + 1
+    else {
+      y--
+      p += 2 * (x - y) + 1
+    }
+    circlePlotPoints(xCenter, yCenter, x, y)
+  }
+}
+
+function circlePlotPoints(xCenter, yCenter, x, y) {
+  setPixel(xCenter + x, yCenter + y)
+  setPixel(xCenter - x, yCenter + y)
+  setPixel(xCenter + x, yCenter - y)
+  setPixel(xCenter - x, yCenter - y)
+  setPixel(xCenter + y, yCenter + x)
+  setPixel(xCenter - y, yCenter + x)
+  setPixel(xCenter + y, yCenter - x)
+  setPixel(xCenter - y, yCenter - x)
+}
+
+// ellipse
+function ellipseMidpoint(xCenter, yCenter, Rx, Ry) {
+  let Rx2 = Rx * Rx
+  let Ry2 = Ry * Ry
+  let twoRx2 = 2 * Rx2
+  let twoRy2 = 2 * Ry2
+
+  let p
+  let x = 0
+  let y = Ry
+  let px = 0
+  let py = twoRx2 * y
+
+  ellipsePlotPoints(xCenter, yCenter, x, y)
+
+  p = round(Ry2 - (Rx2 * Ry) + (0.25 * Rx2))
+
+  while (px < py) {
+    x++
+    px += twoRy2
+    if (p < 0)
+      p += Ry2 + px
+    else {
+      y--
+      py -= twoRx2
+      p += Ry2 + px - py
+    }
+    ellipsePlotPoints(xCenter, yCenter, x, y)
+  }
+
+  p = round(Ry2 * (x + 0.5) * (x + 0.5) + Rx2 * (y - 1) * (y - 1) - Rx2 * Ry2)
+  while (y > 0) {
+    y--
+    py -= twoRx2
+    if (p > 0)
+      p += Rx2 - py
+    else {
+      x++
+      px += twoRy2
+      p += Rx2 + px - py
+    }
+    ellipsePlotPoints(xCenter, yCenter, x, y)
+  }
+}
+
+function ellipsePlotPoints(xCenter, yCenter, x, y) {
+  setPixel(xCenter + x, yCenter + y)
+  setPixel(xCenter - x, yCenter + y)
+  setPixel(xCenter + x, yCenter - y)
+  setPixel(xCenter - x, yCenter - y)
+}
+
+function drawEllipse(xc, yc, rx, ry) {
+  /*
+  if (
+    xc + rx <= w &&
+    xc - rx >= 0 &&
+    yc + ry <= h &&
+    yc - ry >= 0
+  )
+  //*/
+  ellipseMidpoint(xc, yc, rx, ry)
+}
+
+function myfill(xi, yi, originalColor) {
+  console.log(xi, yi)
+  setPixel(xi, yi)
+  if (xi + 1 < w && matrix[xi + 1][yi][2] === originalColor)
+    myfill(xi + 1, yi, originalColor)
+  if (xi - 1 >= 0 && matrix[xi - 1][yi][2] === originalColor)
+    myfill(xi - 1, yi, originalColor)
+  if (yi + 1 < h && matrix[xi][yi + 1][2] === originalColor)
+    myfill(xi, yi + 1, originalColor)
+  if (yi - 1 >= 0 && matrix[xi][yi - 1][2] === originalColor)
+    myfill(xi, yi - 1, originalColor)
+
+
 }
 
 function setPixel(x, y) {
-  matrix[x][y][2] = hex_color
+  if (matrix[x] && matrix[x][y])
+    matrix[x][y][2] = hex_color
 }

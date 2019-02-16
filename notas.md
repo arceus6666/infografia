@@ -10,6 +10,6 @@ Algoritmo DDA
 
 Revisar algoritmo bresenham
 
-```C
+boundary fill algorithm
 
-```
+para eximirse del examen dibujo de poligono scanline

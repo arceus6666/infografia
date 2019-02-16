@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<link rel="shortcut icon" type="image/png" href="./assets/favicon.png" />
 <html lang="">
 <!--
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css">
@@ -8,21 +9,64 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Infografía</title>
+  <script src="./libs/p5.min.js"></script>
+  <script src="./libs/addons/p5.dom.min.js"></script>
+  <!--script src="./libs/addons/p5.sound.min.js"></script-->
+  <script src="sketch2.js"></script>
+  <script>
+    function changeColor(value) {
+      document.getElementById('color_current').style.backgroundColor = value;
+      //console.log(current)
+    }
+
+    function algorithm(value) {
+      document.getElementById('algo').innerText = value
+    }
+
+    function uw() { document.getElementById('w').value++ }
+
+    function uh() { document.getElementById('h').value++ }
+
+    function dw() { document.getElementById('w').value-- }
+
+    function dh() { document.getElementById('h').value-- }
+
+    function clearAll() {
+      document.getElementById('line').style.backgroundColor = 'transparent'
+      document.getElementById('bucket').style.backgroundColor = 'transparent'
+      document.getElementById('circle').style.backgroundColor = 'transparent'
+      document.getElementById('ellipse').style.backgroundColor = 'transparent'
+    }
+  </script>
   <style>
     body {
       padding: 0;
       margin: 0;
+      cursor: 'assets/cursor.png';
     }
-  </style>
-  <script src="./libs/p5.min.js"></script>
-  <script src="./libs/addons/p5.dom.min.js"></script>
-  <script src="./libs/addons/p5.sound.min.js"></script>
-  <script src="sketch2.js"></script>
-  <style>
+
+    .arrow-button {
+      text-align: center;
+      padding: 1px;
+      height: 20px;
+      width: 25px;
+    }
+
     .button {
       border: 1 solid;
       padding: 10px 10px;
       cursor: pointer;
+      outline: none;
+    }
+
+    .tool-button {
+      background-color: transparent;
+      border: 1px solid;
+      cursor: pointer;
+      width: 40px;
+      padding: 1;
+      margin: 1;
+      outline: none;
     }
 
     .grid-container {
@@ -34,6 +78,58 @@
       grid-row-gap: 0;
       padding: 0px;
     }
+
+    .grid-container-2 {
+      border: 1px solid;
+      display: grid;
+      grid-template-columns: auto auto;
+      grid-template-rows: auto;
+      grid-column-gap: 0;
+      grid-row-gap: 0;
+      padding: 0px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      padding-top: 100px;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgb(0, 0, 0);
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      position: relative;
+      margin: auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: fit-content;
+      height: auto;
+    }
+
+    .close {
+      color: #aaaaaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: #000;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .module {
+      cursor: url('./assets/cursor.png')
+    }
   </style>
 </head>
 
@@ -42,35 +138,169 @@
     <tr>
       <td>
         <div style="margin-left: 1%;">
-          <button id="dda">DDA</button>
+          <button id="dda" style="width: 100px;" onclick="algorithm('DDA')">DDA</button>
           <br />
-          <button id="bres">Bresenham</button>
+          <button id="bres" style="width: 100px;" onclick="algorithm('Bresenham')">Bresenham</button>
           <br />
-          <button id="reset">Clear</button>
+          <span>Using:</span><br />
+          <label id="algo" style="text-align: center">DDA</label>
+          <br />
+          <button id="reset" style="width: 100px;">Clear Canvas</button>
           <br />
         </div>
       </td>
       <td>
-        <button id="color_current" class="button" style="background-color: {{hex_color}}"></button>
-      </td>
-      <td>
-        <div class="grid-container">
-          <button id="color_black" class="button" style="background-color: #000000"></button>
-          <button id="color_brown" class="button" style="background-color: #8B4513"></button>
-          <button id="color_red" class="button" style="background-color: #FF0000"></button>
-          <button id="color_darkorange" class="button" style="background-color: #FF7F27"></button>
-          <button id="color_darkgreen" class="button" style="background-color: #008000"></button>
-          <button id="color_darkblue" class="button" style="background-color: #000080"></button>
-          <button id="color_yellow" class="button" style="background-color: #FFFF00"></button>
+        <div style="text-align: center">
+          <span>Zoom: </span>
+          <button id="minus" style="width: 25px; height: 25px;">-</button>
+          <button id="plus" style="width: 25px; height: 25px;">+</button>
+        </div><br />
+        <button id="resizeBtn" class="tool-button" style="width: fit-content"><img src="assets/paint-resize.png">Change
+          Size</button>
+        <div id="myModal" class="modal">
+          <div class="modal-content">
+            <span class="close">&times;</span>
 
-          <button id="color_white" class="button" style="background-color: #FFFFFF"></button>
-          <button id="color_grey" class="button" style="background-color: #808080"></button>
-          <button id="color_pink" class="button" style="background-color: #FFAEC9"></button>
-          <button id="color_lightorange" class="button" style="background-color: #FFC90E"></button>
-          <button id="color_lightgreen" class="button" style="background-color: #B5E61D"></button>
-          <button id="color_skyblue" class="button" style="background-color: #99D9EA"></button>
-          <button id="color_purple" class="button" style="background-color: #A349A4"></button>
+            <table style="text-align: center;">
+              <tr>
+                <td>
+                  <button id="upw" class="arrow-button" onclick="uw()">&uarr;</button>
+                </td>
+                <td></td>
+                <td>
+                  <button id="uph" class="arrow-button" onclick="uh()">&uarr;</button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <input id="w" value="10" style="width: 40px; text-align: center">
+                </td>
+                <td>
+                  <span> x </span>
+                </td>
+                <td>
+                  <input id="h" value="10" style="width: 40px;text-align: center">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <button id="downw" class="arrow-button" onclick="dw()">&darr;</button>
+                </td>
+                <td></td>
+                <td>
+                  <button id="downh" class="arrow-button" onclick="dh()">&darr;</button>
+                </td>
+              </tr>
+            </table>
+            <br />
+            <button id="resize">Accept</button>
+            <button id="cancel" style="float: right;margin: 1;">Cancel</button>
+            <br />
+          </div>
         </div>
+        <script>
+          var modal = document.getElementById('myModal')
+          var btn = document.getElementById("resizeBtn")
+          var span = document.getElementsByClassName("close")[0]
+          var cancel = document.getElementById('cancel')
+          var accept = document.getElementById('resize')
+          btn.onclick = function () {
+            modal.style.display = "block";
+          }
+          span.onclick = function () {
+            modal.style.display = "none";
+          }
+          cancel.onclick = () => { modal.style.display = 'none' }
+          accept.onclick = () => { modal.style.display = 'none' }
+          window.onclick = function (event) {
+            if (event.target == modal) {
+              modal.style.display = "none";
+            }
+          }
+        </script>
+      </td>
+      <td>
+        <table class="tools">
+          <tr>Tools</tr>
+          <tr>
+            <td>
+              <button id="line" class="tool-button"
+                onclick="clearAll();document.getElementById('line').style.backgroundColor = '#DDDDDD'">
+                <img src="assets/paint-line.png">
+              </button>
+            </td>
+            <td>
+              <button id="bucket" class="tool-button"
+                onclick="clearAll();document.getElementById('bucket').style.backgroundColor = '#DDDDDD'">
+                <img src="assets/paint-bucket.png">
+              </button>
+            </td>
+          </tr>
+        </table>
+      </td>
+      <td>
+        <table class="shapes">
+          <tr>Shapes</tr>
+          <tr>
+            <td>
+              <button id="circle" class="tool-button"
+                onclick="clearAll();document.getElementById('circle').style.backgroundColor = '#DDDDDD'">
+                <img src="assets/paint-circle.png">
+              </button>
+            </td>
+            <td>
+              <button id="ellipse" class="tool-button"
+                onclick="clearAll();document.getElementById('ellipse').style.backgroundColor = '#DDDDDD'">
+                <img src="assets/paint-ellipse.png">
+              </button>
+            </td>
+          </tr>
+        </table>
+      </td>
+      <td>
+        <table>
+          <tr>
+            <td>
+              <button id="color_current" class="button"
+                style="width:40px;height: 40px;background-color: #FFFFFF; cursor:default" disabled></button>
+            </td>
+            <td>
+              <div class="grid-container-2">
+                <div class="grid-container">
+                  <button id="color_black" class="button" style="background-color: #000000"
+                    onclick="changeColor('#000000')"></button>
+                  <button id="color_brown" class="button" style="background-color: #8B4513"
+                    onclick="changeColor('#8B4513')"></button>
+                  <button id="color_red" class="button" style="background-color: #FF0000"
+                    onclick="changeColor('#FF0000')"></button>
+                  <button id="color_darkorange" class="button" style="background-color: #FF7F27"
+                    onclick="changeColor('#FF7F27')"></button>
+                  <button id="color_darkgreen" class="button" style="background-color: #008000"
+                    onclick="changeColor('#008000')"></button>
+                  <button id="color_darkblue" class="button" style="background-color: #000080"
+                    onclick="changeColor('#000080')"></button>
+                  <button id="color_yellow" class="button" style="background-color: #FFFF00"
+                    onclick="changeColor('#FFFF00')"></button>
+
+                  <button id="color_white" class="button" style="background-color: #FFFFFF"
+                    onclick="changeColor('#FFFFFF')"></button>
+                  <button id="color_grey" class="button" style="background-color: #808080"
+                    onclick="changeColor('#808080')"></button>
+                  <button id="color_pink" class="button" style="background-color: #FFAEC9"
+                    onclick="changeColor('#FFAEC9')"></button>
+                  <button id="color_lightorange" class="button" style="background-color: #FFC90E"
+                    onclick="changeColor('#FFC90E')"></button>
+                  <button id="color_lightgreen" class="button" style="background-color: #B5E61D"
+                    onclick="changeColor('#B5E61D')"></button>
+                  <button id="color_skyblue" class="button" style="background-color: #99D9EA"
+                    onclick="changeColor('#99D9EA')"></button>
+                  <button id="color_purple" class="button" style="background-color: #A349A4"
+                    onclick="changeColor('#A349A4')"></button>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </table>
       </td>
     </tr>
   </table>
