@@ -32,6 +32,7 @@
     function dh() { document.getElementById('h').value-- }
 
     function clearAll() {
+      document.getElementById('dot').style.backgroundColor = 'transparent'
       document.getElementById('line').style.backgroundColor = 'transparent'
       document.getElementById('bucket').style.backgroundColor = 'transparent'
       document.getElementById('circle').style.backgroundColor = 'transparent'
@@ -223,6 +224,13 @@
         <table class="tools">
           <tr>Tools</tr>
           <tr>
+            <td>
+              <button id="dot" class="tool-button"
+                onclick="clearAll();document.getElementById('dot').style.backgroundColor='#DDDDDD'"
+                style="background-color:#DDDDDD">
+                <img src="assets/cursor.png">
+              </button>
+            </td>
             <td>
               <button id="line" class="tool-button"
                 onclick="clearAll();document.getElementById('line').style.backgroundColor = '#DDDDDD'">

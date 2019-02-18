@@ -13,3 +13,7 @@ Revisar algoritmo bresenham
 boundary fill algorithm
 
 para eximirse del examen dibujo de poligono scanline
+
+segundo
+
+hacer modelo, poner articulaciones, hacer movimiento ( personaje quieto, caminar, otro)

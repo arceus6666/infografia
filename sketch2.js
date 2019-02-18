@@ -6,14 +6,14 @@ mouseY: use the y position from the mouse
 var hex_color = '#FFFFFF'
 var bgColor = '#000000'
 var h = 10
-var w = 7
+var w = 10
 var sqsize = 20
 var bd = sqsize / 2 // border
 var lclick = true
 var eclick = 0
 var alg = 'dda'
-var li1 = [bd, bd]
-var li2 = [0, 0]
+var li1 = new Array(2)
+var li2 = new Array(2)
 
 let cols = w;
 let rows = h;
@@ -47,7 +47,7 @@ for (let i = 0; i < h; i++) {
 */
 //console.log(m2)
 
-var brush = 'line'
+var brush = 'dot'
 
 function setup() {
   // put setup code here
@@ -67,8 +67,11 @@ function setup() {
   var brush_circle = select('#circle')
   brush_circle.mousePressed(() => { brush = 'circle' })
 
-  var ellipse = select('#ellipse')
-  ellipse.mousePressed(() => { brush = 'ellipse' })
+  var brush_ellipse = select('#ellipse')
+  brush_ellipse.mousePressed(() => { brush = 'ellipse' })
+
+  var brush_dot = select('#dot')
+  brush_dot.mousePressed(() => { brush = 'dot' })
 
   var reset = select('#reset')
   reset.mousePressed(resetMatrix)
@@ -273,9 +276,7 @@ function mousePressed() {
         //}
       }
     } else if (brush === 'bucket') {
-      console.log('fill1')
-      //console.log(matrix[y][x][2])
-      myfill(x, y, matrix[y][x][2])
+      myfill(x, y, hex_color, getColor(x, y))
     } else if (brush === 'circle') {
       if (lclick) {
         li1 = [x, y]
@@ -304,6 +305,8 @@ function mousePressed() {
         let ry = Math.floor(Math.sqrt(aa + bb))
         drawEllipse(li1[0], li1[1], rx, ry)
       }
+    } else if (brush === 'dot') {
+      setPixel(x, y)
     }
     //*/
   }
@@ -377,7 +380,7 @@ function circleMidpoint(xCenter, yCenter, radius) {
   let x = 0
   let y = radius
   let p = 1 - radius
-  console.log(xCenter, yCenter, x, y)
+  //console.log(xCenter, yCenter, x, y)
   circlePlotPoints(xCenter, yCenter, x, y)
 
   while (x < y) {
@@ -467,22 +470,63 @@ function drawEllipse(xc, yc, rx, ry) {
   ellipseMidpoint(xc, yc, rx, ry)
 }
 
-function myfill(xi, yi, originalColor) {
-  console.log(xi, yi)
-  setPixel(xi, yi)
-  if (xi + 1 < w && matrix[xi + 1][yi][2] === originalColor)
-    myfill(xi + 1, yi, originalColor)
-  if (xi - 1 >= 0 && matrix[xi - 1][yi][2] === originalColor)
-    myfill(xi - 1, yi, originalColor)
-  if (yi + 1 < h && matrix[xi][yi + 1][2] === originalColor)
-    myfill(xi, yi + 1, originalColor)
-  if (yi - 1 >= 0 && matrix[xi][yi - 1][2] === originalColor)
-    myfill(xi, yi - 1, originalColor)
-
-
+function myfill(x, y, fillColor, oldColor) {
+  // console.log(x, y, oldColor, 'to', fillColor)
+  if (getColor(x, y) === oldColor) {
+    setPixel(x, y)
+    /*
+    if (x + 1 < w && getColor(x + 1, y) === oldColor) {
+      myfill(x + 1, y, oldColor)
+      if (y - 1 >= 0 && getColor(x + 1, y - 1) === oldColor)
+        myfill(x + 1, y - 1, oldColor)
+      if (y + 1 < h && getColor(x + 1, y + 1) === oldColor)
+        myfill(x + 1, y + 1, oldColor)
+    }
+    if (x - 1 >= 0 && getColor(x - 1, y) === oldColor) {
+      myfill(x - 1, y, oldColor)
+      if (y - 1 >= 0 && getColor(x - 1, y - 1) === oldColor)
+        myfill(x - 1, y - 1, oldColor)
+      if (y + 1 < h && getColor(x - 1, y + 1) === oldColor)
+        myfill(x - 1, y + 1, oldColor)
+    }
+    if (y + 1 < h && getColor(x, y + 1) === oldColor)
+      myfill(x, y + 1, oldColor)
+    if (y - 1 >= 0 && getColor(x, y - 1) === oldColor)
+      myfill(x, y - 1, oldColor)
+    */
+    myfill(x + 1, y, fillColor, oldColor)
+    myfill(x - 1, y, fillColor, oldColor)
+    myfill(x, y + 1, fillColor, oldColor)
+    myfill(x, y - 1, fillColor, oldColor)
+  }
 }
+
+
+
+function tEdge(yUpper, xIntersect, dxPerscan) {
+  yUpper: yUpper
+  xIntersect: xIntersect
+  dxPerscan: dxPerscan
+}
+
+//function insertEdge
 
 function setPixel(x, y) {
   if (matrix[x] && matrix[x][y])
     matrix[x][y][2] = hex_color
+}
+
+function getColor(x, y) {
+  let l1 = matrix.length
+  let l2 = matrix[0].length
+  if (x < 0 || y < 0 || x >= l1 || y >= l2)
+    return false
+  try {
+    return matrix[x][y][2] ? matrix[x][y][2] : false
+  } catch (e) {
+    console.log('e in ', x, y)
+  }
+  /*
+  return matrix[x][y][2]
+  */
 }
