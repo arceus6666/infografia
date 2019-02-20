@@ -1,9 +1,47 @@
+<!DOCTYPE html>
 <html>
 
 <head>
-  <title>Infografía 2019 UPB</title>
+  <title>Infografia 2019 UPB</title>
   <script src="three.js-master/build/three.js"></script>
   <script src="three.js-master/build/three.min.js"></script>
+  <script>
+    let renderer = null, scene = null, camera = null
+    function onLoad() {
+      console.log('carga')
+      let container = document.getElementById('container')
+
+      renderer = new THREE.WebGLRenderer()
+      renderer.setSize(container.offsetWidth, container.offsetHeight)
+
+      container.appendChild(renderer.domElement)
+
+      scene = new THREE.Scene()
+
+      camera = new THREE.PerspectiveCamera(
+        45,
+        container.offsetWidth / container.offsetHeight,
+        0.1,
+        4000
+      )
+      //x,y,z
+      camera.position.set(0, 0, 3)
+    }
+
+    function drawTriangule() {
+      let geometry = new TRHEE.Geometry()
+      let a = new THREE.Vector3(0.0, 1.0, 0.0)
+      let b = new THREE.Vector3(0.0, 1.0, 0.0)
+      let c = new THREE.Vector3(0.0, 1.0, 0.0)
+    }
+  </script>
 </head>
+
+<body onload="onLoad()">
+  <center>
+    <h1>Infografía</h1>
+    <div id="container" class="container" style="width:95%;height: 80%; position:absolute;"></div>
+  </center>
+</body>
 
 </html>

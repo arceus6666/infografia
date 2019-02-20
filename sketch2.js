@@ -501,13 +501,42 @@ function myfill(x, y, fillColor, oldColor) {
   }
 }
 
+function rotateR(x1, y1, x2, y2) {
+  let prev = matrix
 
+  let xi, xf, yi, yf, cx = Math.abs(x1 - x2), cy = Math.abs(y1 - y2)
+  if (x1 > x2) {
+    xi = x2
+    xf = x1
+  } else {
+    xi = x1
+    xf = x2
+  }
 
-function tEdge(yUpper, xIntersect, dxPerscan) {
-  yUpper: yUpper
-  xIntersect: xIntersect
-  dxPerscan: dxPerscan
+  if (y1 > y2) {
+    yi = y2
+    yf = y1
+  } else {
+    yi = y1
+    yf = y2
+  }
+  let im = []
+  for (let i = xi, ii = 0; i < xf; i++ , ii++) {
+    im[i].push([])
+    for (let j = yi, jj = 0; j < yf; j++ , jj++) {
+      im[ii][jj] = matrix[i][j]
+    }
+  }
+  let nm = []
+
+  for (let i = 0; i < im.length; i++) {
+    for (let j = 0; j < im[0].length; j++) {
+
+    }
+  }
 }
+
+function rotateL() { }
 
 //function insertEdge
 
